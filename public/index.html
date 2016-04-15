@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>proc-vis-io loading...</title>
+
+    <link rel="stylesheet" href="styles/dagre-d3.css" type="text/css">
+
+    <!-- all this is for dagre-d3 -->
+    <script src="scripts/components/lodash/dist/lodash.js"></script>
+    <script src="scripts/components/graphlib/dist/graphlib.core.js"></script>
+    <script src="scripts/components/graphlib-dot/dist/graphlib-dot.core.js"></script>
+    <script src="scripts/components/dagre/dist/dagre.core.js"></script>
+    <script src="scripts/components/d3/d3.js"></script>
+    <script src="scripts/components/dagre-d3/dist/dagre-d3.core.js"></script>
+
+    <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+
+    <script src="scripts/main.js"></script>
+  </head>
+  <body>
+
+    <!-- TODO a shameless rip off dagre-d3 interactive demo -->
+
+    <h1>Dagre Interactive Demo (a shameless rip-off)</h1>
+
+    <h2>Input</h2>
+
+    <form>
+      <label for="inputGraph">Graphviz Definition</label>
+      <textarea id="inputGraph" rows="5">
+        /* Example */
+        digraph {
+        /* Note: HTML labels do not work in IE, which lacks support for &lt;foreignObject&gt; tags. */
+        node [rx=5 ry=5 labelStyle="font: 300 14px 'Helvetica Neue', Helvetica"]
+        edge [labelStyle="font: 300 14px 'Helvetica Neue', Helvetica"]
+        A [labelType="html"
+        label="A <span style='font-size:32px'>Big</span> <span style='color:red;'>HTML</span> Source!"];
+        C;
+        E [label="Bold Red Sink" style="fill: #f77; font-weight: bold"];
+        A -&gt; B -&gt; C;
+        B -&gt; D [label="A blue label" labelStyle="fill: #55f; font-weight: bold;"];
+        D -&gt; E [label="A thick red edge" style="stroke: #f77; stroke-width: 2px;" arrowheadStyle="fill: #f77"];
+        C -&gt; E;
+        A -&gt; D [labelType="html" label="A multi-rank <span style='color:blue;'>HTML</span> edge!"];
+        }
+      </textarea>
+
+      <a id="graphLink">Link for this graph</a>
+    </form>
+
+    <h2>Graph Visualization</h2>
+    <!-- TMP -->
+
+    <svg width=800 height=600>
+      <g/>
+    </svg>
+
+  </body>
+</html>

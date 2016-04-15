@@ -1,0 +1,27 @@
+{
+  "name": "proc-vis-io",
+  "authors": [
+    "Costa Shapiro <costa@mouldwarp.com>"
+  ],
+  "description": "Well...",
+  "main": "public/index.html",
+  "keywords": [
+    "proc",
+    "vis",
+    "io"
+  ],
+  "license": "BSD",
+  "homepage": "https://procvis.io",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "public/scripts/components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "^3.5.16",
+    "dagre-d3": "^0.4.17",
+    "graphlib-dot": "^0.6.2"
+  }
+}
