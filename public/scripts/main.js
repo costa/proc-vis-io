@@ -17,18 +17,18 @@ $(function() {
   // Create and configure the renderer
   var render = dagreD3.render();
 
-  var oldGraph, newGraph;
+  var oldGraph;
 
-  function doDraw() {
-    if (oldGraph == newGraph) {
+  function tryDraw(graph) {
+    if (oldGraph == graph) {
       return;
     }
 
     var g;
     try {
-      g = graphlibDot.read(newGraph);
+      g = graphlibDot.read(graph);
     } catch (e) {
-      console.error(newGraph)
+      console.error(graph)
       console.error(e);
       g =  graphlibDot.read(digraphy("EEE [labelType=\"html\" label=\"<big style='color:red;'>Error parsing data from pid " + pid + "</big>\"];"));
     }
@@ -47,14 +47,7 @@ $(function() {
     // Render the graph into svg g
     d3.select("svg g").call(render, g);
 
-    oldGraph = newGraph;
-  }
-
-  var throttled_doDraw = _.throttle(doDraw, 1000 / DRAW_FPS);
-
-  function tryDraw(graph) {
-    newGraph = graph;
-    throttled_doDraw();
+    oldGraph = graph;
   }
 
   var pidRE = /[?&]pid=([^&]+)/;
@@ -77,14 +70,25 @@ $(function() {
       dotData + "\n}"
   }
 
-  procFB.child(pid).on('value', function(snapshot) {
-    var data = snapshot && snapshot.val();
-    var dotData = data && data.dot;
-    if (!dotData) {
-      dotData = "ZZZ [labelType=\"html\" label=\"<big>Waiting to hear from pid " + pid + "</big>\"];"
+  var newSnapshot;
+  procFB.child(pid).on('value', _.throttle(function(snapshot) {
+    newSnapshot = snapshot;
+  }, 1000 / DRAW_FPS));
+
+  var renderLoop = function() {
+    var snapshot = newSnapshot;
+    newSnapshot = null;
+    if (snapshot) {
+      var data = snapshot && snapshot.val();
+      var dotData = data && data.dot;
+      if (!dotData) {
+        dotData = "ZZZ [labelType=\"html\" label=\"<big>Waiting to hear from pid " + pid + "</big>\"];"
+      }
+      tryDraw(digraphy(dotData));
     }
-    tryDraw(digraphy(dotData));
-  });
+    return setTimeout(renderLoop, 1000 / DRAW_FPS);
+  };
+  renderLoop();
 
   $('title', document).text("Viewing process #" + pid);
 });
