@@ -1,6 +1,7 @@
 // NOTE heavily based on https://github.com/cpettitt/dagre-d3/blob/master/demo/interactive-demo.html
 
 var TRANSITION_DURATION_MS = 500;
+var DRAW_FPS = 1;
 
 $(function() {
 
@@ -16,20 +17,20 @@ $(function() {
   // Create and configure the renderer
   var render = dagreD3.render();
 
-  var oldGraph;
+  var oldGraph, newGraph;
 
-  function tryDraw(graph) {
-    if (oldGraph == graph) {
+  function doDraw() {
+    if (oldGraph == newGraph) {
       return;
     }
 
-    // inputGraph.setAttribute("class", "");
     var g;
     try {
-      g = graphlibDot.read(graph);
+      g = graphlibDot.read(newGraph);
     } catch (e) {
-      // inputGraph.setAttribute("class", "error");
-      throw e;
+      console.error(newGraph)
+      console.error(e);
+      g =  graphlibDot.read(digraphy("EEE [labelType=\"html\" label=\"<big style='color:red;'>Error parsing data from pid " + pid + "</big>\"];"));
     }
 
     // Set margins, if not present
@@ -46,7 +47,14 @@ $(function() {
     // Render the graph into svg g
     d3.select("svg g").call(render, g);
 
-    oldGraph = graph;
+    oldGraph = newGraph;
+  }
+
+  var throttled_doDraw = _.throttle(doDraw, 1000 / DRAW_FPS);
+
+  function tryDraw(graph) {
+    newGraph = graph;
+    throttled_doDraw();
   }
 
   var pidRE = /[?&]pid=([^&]+)/;
@@ -54,7 +62,10 @@ $(function() {
   var pid = pidMatch && decodeURIComponent(pidMatch[1]);
 
   if (!pid) {
-    return window.location.pathname = '/?pid=' + prompt('PID');
+    return window.location =
+      [
+        window.location.protocol, '//', window.location.host, window.location.pathname, '?pid=' + prompt('PID')
+      ].join('');
   }
 
   var procFB = new Firebase("https://proc-vis-io.firebaseio.com/").child('proc');
