@@ -1,8 +1,18 @@
-/* TODO a shameless rip off dagre-d3 interactive demo */
+/* NOTE heavily based on https://github.com/cpettitt/dagre-d3/blob/master/demo/interactive-demo.html */
 
+body {
+    background: #eee;
+    margin: 0
+}
 svg {
-  border: 1px solid #999;
-  overflow: hidden;
+    position:absolute;
+    display: block;
+    /* border: 1px solid #ccc; */
+    top:5%;
+    left:5%;
+    width:90%;
+    height:90%;
+    background:#fff;
 }
 
 .node {
@@ -28,21 +38,4 @@ svg {
   stroke: #333;
   stroke-width: 1.5px;
   fill: none;
-}
-
-h1, h2 {
-  color: #333;
-}
-
-textarea {
-  width: 800px;
-}
-
-label {
-  margin-top: 1em;
-  display: block;
-}
-
-.error {
-  color: red;
 }
